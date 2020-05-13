@@ -1,6 +1,6 @@
-const AWS = require('aws-sdk');
-const p = require('phin');
-var jwtLib = require('jsonwebtoken');
+import AWS from 'aws-sdk';
+import p from 'phin';
+import jwtLib from 'jsonwebtoken';
 
 // initialize new AWS Systems Manager client with region
 const ssmClient = new AWS.SSM({
@@ -20,10 +20,13 @@ const DEFAULT_EXPIRY_MILLIS = 300000;
  * @param {AWS.SSM.Types.GetParameterRequest} paramRequest
  * @return {string} value as stored in Parameter Store
  */
-async function getParam(paramRequest) {
+async function getParam(paramRequest: AWS.SSM.Types.GetParameterRequest) {
   const getReq = ssmClient.getParameter(paramRequest);
   try {
-    const response = await getReq.promise();
+    const response:AWS.SSM.Types.GetParameterResult = await getReq.promise();
+    if (!response.Parameter) {
+      throw new Error('failed to retrieve parameter from Parameter Store');
+    }
     return response.Parameter.Value;
   } catch (err) {
     console.warn(err);
@@ -36,7 +39,7 @@ async function getParam(paramRequest) {
  *
  * @param {AWS.SSM.Types.PutParameterRequest} paramRequest
  */
-async function putParam(paramRequest) {
+async function putParam(paramRequest:AWS.SSM.Types.PutParameterRequest) {
   const putReq = ssmClient.putParameter(paramRequest);
   try {
     await putReq.promise();

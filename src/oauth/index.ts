@@ -190,7 +190,7 @@ export function clientCredentials(oauthKey: string): AsyncFunction {
  *
  * usage:
  *
- * import oauth from 'wbw-oauth'
+ * import {oauth} from 'unloop-rest-api'
  *
  * // ex: retrieving blackboard token of type client_credentials
  * const getBlackboardClientToken = oauth.clientCredentials('blackboard');

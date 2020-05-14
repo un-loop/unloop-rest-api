@@ -9,8 +9,6 @@ export interface HTTPResponse {
 type ResponseWithContent = (body:object) => HTTPResponse
 type ResponseWithError = (msg:string) => HTTPResponse
 
-//TODO: review - type object does NOT allow for values like null/undefined
-//see more here: https://www.typescriptlang.org/docs/handbook/basic-types.html#object
 export const buildResponse = (responseCode: StatusCode) => (body?: any) => {
   if (responseCode === StatusCode.NO_CONTENT && body !== undefined) {
     throw new Error('No content does not take in a body');

@@ -17,8 +17,6 @@ const canonicalizePath = (path: string) => {
     {
       stripProtocol: true,
       stripHash: true,
-      // TODO: review - removeQueryParameters takes in a regex, uses [/^utm_\w+/i] by default
-      // removeQueryParameters: true,
       removeTrailingSlash: true,
     },
   );

@@ -1,5 +1,5 @@
 import p from 'phin';
-import HTTPMethod from './httpMethods'
+import {HTTPMethod} from './httpMethods';
 
 const REQUEST_TIMEOUT_MILLIS = 2000;
 

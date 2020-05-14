@@ -1,4 +1,4 @@
-import StatusCode from './statusCodes';
+import {StatusCode} from './statusCodes';
 
 export interface HTTPResponse {
   statusCode: StatusCode
@@ -11,7 +11,7 @@ type ResponseWithError = (msg:string) => HTTPResponse
 
 //TODO: review - type object does NOT allow for values like null/undefined
 //see more here: https://www.typescriptlang.org/docs/handbook/basic-types.html#object
-const buildResponse = (responseCode: StatusCode) => (body?: any) => {
+export const buildResponse = (responseCode: StatusCode) => (body?: any) => {
   if (responseCode === StatusCode.NO_CONTENT && body !== undefined) {
     throw new Error('No content does not take in a body');
   }
@@ -26,11 +26,9 @@ const buildResponse = (responseCode: StatusCode) => (body?: any) => {
   };
 };
 
-const buildErrorResponse = (responseCode: StatusCode) => (msg: string) => {
+export const buildErrorResponse = (responseCode: StatusCode) => (msg: string) => {
   return buildResponse(responseCode)({message: msg})
 }
-
-export default buildResponse;
 
 export const success: ResponseWithContent  = buildResponse(StatusCode.SUCCESS);
 export const created: ResponseWithContent = buildResponse(StatusCode.CREATED);

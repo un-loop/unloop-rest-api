@@ -1,6 +1,11 @@
-export * from './src/buildResponse';
-export * from './src/httpMethods';
-export * from './src/statusCodes';
-export * from './src/lambda/resourceRouter';
+export * as oauth from './src/oauth';
 export * from './src/oauth';
-export * from './src/requests';
+
+export * as http from './src/http';
+export * from './src/http/httpMethods';
+export * from './src/http/buildResponse';
+export * from './src/http/requests';
+export * from './src/http/statusCodes';
+
+export * as lambda from './src/lambda';
+export * from './src/lambda/resourceRouter';

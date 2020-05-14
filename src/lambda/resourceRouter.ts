@@ -1,5 +1,5 @@
-import {notFound, badRequest} from '../buildResponse';
-import HTTPMethod from '../httpMethods';
+import {notFound, badRequest} from '../http/buildResponse';
+import {HTTPMethod} from '../http/httpMethods';
 import normalizeUrl from 'normalize-url';
 import {ApiGatewayEvent, ResourceFunction, RouteResource} from './models';
 
@@ -25,11 +25,11 @@ const canonicalizePath = (path: string) => {
 };
 
 
-const resourceRouter = (routes: RouteResource) => (event: ApiGatewayEvent) => {
+export const resourceRouter = (routes: {[key: string]: RouteResource}) => (event: ApiGatewayEvent) => {
   const pathParts = canonicalizePath(event.resource).split(separatorRegex);
 
   let pathIndex = 0;
-  let foundRoute = routes;
+  let foundRoute:RouteResource = routes;
   let foundToken;
 
   while (pathIndex < pathParts.length) {
@@ -42,8 +42,7 @@ const resourceRouter = (routes: RouteResource) => (event: ApiGatewayEvent) => {
       }`);
     }
 
-    //TODO: fix this after using it inside of blackboard project
-    //so it stops yelling at me
+    //@ts-ignore
     foundRoute = foundRoute[resourceName];
 
     foundToken = testToken(pathParts[++pathIndex]);
@@ -52,7 +51,6 @@ const resourceRouter = (routes: RouteResource) => (event: ApiGatewayEvent) => {
     }
   }
 
-  //TODO: fix this
   let action: ResourceFunction | undefined
 
   switch (event.httpMethod) {
@@ -82,7 +80,6 @@ const resourceRouter = (routes: RouteResource) => (event: ApiGatewayEvent) => {
     }
   }
 
+  //@ts-ignore
   return action(event);
 };
-
-export default resourceRouter;

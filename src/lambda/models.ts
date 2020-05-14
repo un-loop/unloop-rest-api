@@ -1,4 +1,4 @@
-import { HTTPResponse } from "../buildResponse";
+import { HTTPResponse } from "../http/buildResponse";
 
 //loose wrapper around API Gateway event: https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
 export interface ApiGatewayEvent {

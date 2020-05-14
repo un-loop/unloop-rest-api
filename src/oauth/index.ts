@@ -201,5 +201,3 @@ export function clientCredentials(oauthKey: string): AsyncFunction {
  * @return {function(): string} async function returning valid token
  *
  */
-export default {jwt, clientCredentials}
-

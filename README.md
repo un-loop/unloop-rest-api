@@ -4,7 +4,7 @@ This library contains utility functions needed by various REST API's.
 
 They're divided as follows: 
 
-##http
+## http
 
 Utility classes representing HTTP Status Codes and methods. 
    *  **StatusCode**

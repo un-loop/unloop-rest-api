@@ -22,8 +22,8 @@ const getPhinClient = (method: HTTPMethod) => (token: string) => {
  *
  * @example
  *
- *    let urlWithParams = buildQueryParamUrl("https://localhost:3000/announcements", {limit: 5, sort: "asc"})
- *    console.log(urlWithParams) // https://localhost:3000/announcements?limit=4&sort=asc
+ *  let urlWithParams = buildQueryParamUrl("https://localhost:3000/announcements", {limit: 5, sort: "asc"})
+ *  console.log(urlWithParams) // https://localhost:3000/announcements?limit=4&sort=asc
  */
 export const buildQueryParamUrl = (base: string, queryParams: any) => {
   const url = new URL(base);

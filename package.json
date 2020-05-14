@@ -2,7 +2,7 @@
   "name": "unloop-rest-api",
   "version": "1.0.0",
   "description": "Rest API library for Unloop",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

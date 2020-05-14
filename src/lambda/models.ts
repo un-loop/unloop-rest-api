@@ -9,7 +9,6 @@ export interface ApiGatewayEvent {
   body: any
 }
 
-//TODO: update this because it will always have a build response response type
 export type ResourceFunction = (event?: ApiGatewayEvent) => HTTPResponse;
 
 export interface RouteResource {

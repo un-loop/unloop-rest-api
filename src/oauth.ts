@@ -20,7 +20,7 @@ const DEFAULT_EXPIRY_MILLIS = 300000;
  * @param {AWS.SSM.Types.GetParameterRequest} paramRequest
  * @return {string} value as stored in Parameter Store
  */
-async function getParam(paramRequest: AWS.SSM.Types.GetParameterRequest) {
+async function getParam(paramRequest: AWS.SSM.Types.GetParameterRequest): Promise<any> {
   const getReq = ssmClient.getParameter(paramRequest);
   try {
     const response:AWS.SSM.Types.GetParameterResult = await getReq.promise();
@@ -39,7 +39,7 @@ async function getParam(paramRequest: AWS.SSM.Types.GetParameterRequest) {
  *
  * @param {AWS.SSM.Types.PutParameterRequest} paramRequest
  */
-async function putParam(paramRequest:AWS.SSM.Types.PutParameterRequest) {
+async function putParam(paramRequest:AWS.SSM.Types.PutParameterRequest): Promise<void> {
   const putReq = ssmClient.putParameter(paramRequest);
   try {
     await putReq.promise();
@@ -56,7 +56,7 @@ async function putParam(paramRequest:AWS.SSM.Types.PutParameterRequest) {
  * @param {string} oauthKey Oauth Key as configured via environment variable
  * @return {string} valid access token based on configured OAuth server
  */
-async function getAndSaveToken(oauthKey) {
+async function getAndSaveToken(oauthKey: string): Promise<string> {
   const secrets = await getParam({
     Name: `/oauth/${oauthKey}/${auth.CC}/secrets`,
     WithDecryption: true,
@@ -69,7 +69,7 @@ async function getAndSaveToken(oauthKey) {
 
   const parsedSecrets = JSON.parse(secrets);
 
-  const buff = Buffer.from(
+  const buff:Buffer = Buffer.from(
     `${parsedSecrets.clientId}:${parsedSecrets.clientSecret}`);
   const base64Creds = buff.toString('base64');
 
@@ -87,7 +87,7 @@ async function getAndSaveToken(oauthKey) {
     },
   });
 
-  const tokenRespBody = tokenResp.body;
+  const tokenRespBody:any = tokenResp.body;
 
   if (!tokenRespBody || !tokenRespBody['access_token'] ||
       !tokenRespBody['expires_in']) {
@@ -103,7 +103,7 @@ async function getAndSaveToken(oauthKey) {
     expiration: expirationDate.getTime(),
   };
 
-  const tokenSsmParams = {
+  const tokenSsmParams:AWS.SSM.Types.PutParameterRequest = {
     Name: `/oauth/${oauthKey}/${auth.CC}/token`,
     Type: 'SecureString',
     Value: JSON.stringify(tokenVal),
@@ -118,21 +118,20 @@ async function getAndSaveToken(oauthKey) {
  * Generates a JWT token based on the default expiration of
  * 5 minutes and passed api key + secret
  *
- * @param {*} apiKey JWT API Key
- * @param {*} apiSecret JWT API secret
+ * @param {string} apiKey JWT API Key
+ * @param {string} apiSecret JWT API secret
  * @return {string} valid JWT token
  */
-function generateJWTToken(apiKey, apiSecret) {
+function generateJWTToken(apiKey: string, apiSecret: string): string {
   const expiryTime = new Date().getTime() + DEFAULT_EXPIRY_MILLIS;
   const payload = {
     iss: apiKey,
     exp: expiryTime
   }
-  const token = jwtLib.sign(payload, apiSecret);
-  return token
+  return jwtLib.sign(payload, apiSecret);
 }
 
-function checkKey(oauthKey) {
+function checkKey(oauthKey: string) {
   if (!oauthKey || oauthKey.length === 0) {
     throw new Error('please pass a valid OAuth key');
   }
@@ -140,7 +139,9 @@ function checkKey(oauthKey) {
   console.debug('retrieving oauth credentials for:', oauthKey);
 }
 
-export function jwt(oauthKey) {
+type AsyncFunction = () => Promise<String>
+
+export function jwt(oauthKey: string): AsyncFunction {
   checkKey(oauthKey);
 
   return async () => {
@@ -159,7 +160,7 @@ export function jwt(oauthKey) {
   }
 }
 
-export function clientCredentials(oauthKey) {
+export function clientCredentials(oauthKey: string): AsyncFunction {
     checkKey(oauthKey);
 
     return async () => {

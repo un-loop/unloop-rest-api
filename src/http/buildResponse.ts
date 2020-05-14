@@ -32,8 +32,6 @@ export const success: ResponseWithContent  = buildResponse(StatusCode.SUCCESS);
 export const created: ResponseWithContent = buildResponse(StatusCode.CREATED);
 export const noContent: () => HTTPResponse = buildResponse(StatusCode.NO_CONTENT);
 
-//unsuccessful states take in a string and will be formatted into
-//{message: ERROR_MSG}
 export const failure: ResponseWithError = buildErrorResponse(StatusCode.INTERNAL_ERROR);
 export const notFound: ResponseWithError = buildErrorResponse(StatusCode.NOT_FOUND);
 export const badRequest: ResponseWithError = buildErrorResponse(StatusCode.BAD_REQUEST);

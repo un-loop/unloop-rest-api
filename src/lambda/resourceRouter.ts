@@ -1,32 +1,33 @@
-import {notFound, badRequest} from '../libs/buildResponse';
-import httpMethods from '../libs/httpMethods';
+import {notFound, badRequest} from '../http/buildResponse';
+import {HTTPMethod} from '../http/httpMethods';
 import normalizeUrl from 'normalize-url';
+import {ApiGatewayEvent, ResourceFunction, RouteResource} from './models';
 
 const beginningSlashes = /^\/+/;
 const separatorRegex = /\/+/;
 const tokenRegex = /%7B\w+%7D/;
 
-const testToken = (str) => {
+const testToken = (str: string) => {
   return str && str.match(tokenRegex);
 };
 
-const canonicalizePath = (path) => {
+const canonicalizePath = (path: string) => {
   return normalizeUrl(
     path.replace(beginningSlashes, ''),
     {
       stripProtocol: true,
       stripHash: true,
-      removeQueryParameters: true,
       removeTrailingSlash: true,
     },
   );
 };
 
-const resourceRouter = (routes) => (event) => {
+
+export const resourceRouter = (routes: {[key: string]: RouteResource}) => (event: ApiGatewayEvent) => {
   const pathParts = canonicalizePath(event.resource).split(separatorRegex);
 
   let pathIndex = 0;
-  let foundRoute = routes;
+  let foundRoute:RouteResource = routes;
   let foundToken;
 
   while (pathIndex < pathParts.length) {
@@ -39,6 +40,7 @@ const resourceRouter = (routes) => (event) => {
       }`);
     }
 
+    //@ts-ignore
     foundRoute = foundRoute[resourceName];
 
     foundToken = testToken(pathParts[++pathIndex]);
@@ -47,41 +49,35 @@ const resourceRouter = (routes) => (event) => {
     }
   }
 
-  let action;
+  let action: ResourceFunction | undefined
+
   switch (event.httpMethod) {
-    case httpMethods.GET: {
+    case HTTPMethod.GET: {
       action = foundToken ?
         foundRoute.get : foundRoute.getAll;
       break;
     }
 
-    case httpMethods.PUT: {
+    case HTTPMethod.PUT: {
       if (!foundToken) {
         return badRequest('Update requires an id.');
       }
       action = foundRoute.update;
       break;
     }
-    case httpMethods.CREATE: {
-      if (foundToken) {
-        return badRequest('Create does not take an id.');
-      }
-      action = foundRoute.create;
-      break;
-    }
-    case httpMethods.DELETE: {
+    case HTTPMethod.DELETE: {
       if (!foundToken) {
-        return badRequest('Remove requires and id.');
+        return badRequest('Remove requires an id.');
       }
       action = foundRoute.remove;
       break;
     }
-    case httpMethods.POST: {
+    case HTTPMethod.POST: {
       action = foundRoute.post;
       break;
     }
   }
+
+  //@ts-ignore
   return action(event);
 };
-
-export default resourceRouter;

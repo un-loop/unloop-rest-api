@@ -141,6 +141,23 @@ function checkKey(oauthKey: string) {
 
 type AsyncFunction = () => Promise<String>
 
+/**
+ * Returns a valid jwt token.
+ *
+ * usage:
+ *
+ * import {oauth} from 'unloop-rest-api'
+ *
+ * // ex: retrieving blackboard jwt token
+ * const getBlackboardJWTToken = oauth.jwt('blackboard');
+ * const validJWTToken = await getBlackboardJWTToken();
+ *
+ * See README for additional examples
+ *
+ * @param {string} oauthKey OAuth key configured inside of AWS Parameter Store under /oauth/KEY/jwt/secrets
+ * @return {function(): string} async function returning valid token
+ *
+ */
 export function jwt(oauthKey: string): AsyncFunction {
   checkKey(oauthKey);
 
@@ -160,6 +177,24 @@ export function jwt(oauthKey: string): AsyncFunction {
   }
 }
 
+/**
+ * Returns a valid client credentials token, either directly from the OAuth server
+ * or from AWS Parameter Store.
+ *
+ * usage:
+ *
+ * import {oauth} from 'unloop-rest-api'
+ *
+ * // ex: retrieving blackboard client credentials token
+ * const getBlackboardClientToken = oauth.clientCredentials('blackboard');
+ * const validClientCredentialsToken = await getBlackboardClientToken();
+ *
+ * See README for additional examples
+ *
+ * @param {string} oauthKey OAuth key configured inside of AWS Parameter Store under /oauth/KEY/client_credentials/secrets
+ * @return {function(): string} async function returning valid token
+ *
+ */
 export function clientCredentials(oauthKey: string): AsyncFunction {
     checkKey(oauthKey);
 
@@ -182,22 +217,3 @@ export function clientCredentials(oauthKey: string): AsyncFunction {
       return parsedToken.token;
     }
 }
-
-/**
- * Responsible for retrieving a valid access token from
- * either the Parameter Store or directly from the OAuth server.
- * The requested token can be either type jwt or client credentials.
- *
- * usage:
- *
- * import {oauth} from 'unloop-rest-api'
- *
- * // ex: retrieving blackboard token of type client_credentials
- * const getBlackboardClientToken = oauth.clientCredentials('blackboard');
- * const validClientToken = await getBlackboardClientToken;
- *
- * See README for additional examples
- *
- * @return {function(): string} async function returning valid token
- *
- */

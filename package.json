@@ -18,7 +18,7 @@
   "homepage": "https://github.com/ChiralMichael/unloop-rest-api#readme",
   "dependencies": {
     "@babel/runtime": "^7.9.2",
-    "aws-sdk": "^2.618.0",
+    "aws-sdk": "^2.814.0",
     "normalize-url": "^5.0.0",
     "source-map-support": "^0.5.19"
   },
